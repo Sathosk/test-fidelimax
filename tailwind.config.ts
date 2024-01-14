@@ -8,7 +8,14 @@ const config: Config = {
   ],
   theme: {
     extend: {
-
+      colors: {
+        gray: {
+          100: '#F2F4F8',
+          800: '#19202D',
+        },
+        alert: '#FFAE00',
+        primary: '#FFB800',
+      },
     },
   },
   plugins: [],
