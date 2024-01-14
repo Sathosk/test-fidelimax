@@ -14,11 +14,12 @@ type AnswerType = {
 }
 
 export default function DynamicSurveyForm() {
-  const [surveyData, setSurveyData] = useState<SurveyResponseType>()
-  const [answers, setAnswers] = useState<AnswerType[]>([])
+  const [surveyData, setSurveyData] = useState<SurveyResponseType>() // Survey Data from API
+  const [answers, setAnswers] = useState<AnswerType[]>([]) // Answers from user and body for post request
 
   console.log('surveyData: ', surveyData)
 
+  // TODO: fetch survey data from API and set it to surveyData state and answers state
   useEffect(() => {
     async function fetchSurveyData() {
       try {
@@ -67,18 +68,20 @@ export default function DynamicSurveyForm() {
       onSubmit={onSubmit}
     >
       {surveyData &&
-        surveyData.itens.map((item, index) =>
-          item.typeQuestion === 5 || item.typeQuestion === 2 ? (
-            <RadioInputQuestion
-              key={index}
-              id={index}
-              description={item.content}
-              mandatory={item.mandatory}
-              answerValue={item.answerValue}
-              options={item.itens || undefined}
-              onChange={handleInputChange}
-            />
-          ) : null,
+        Array.isArray(surveyData.itens) &&
+        surveyData.itens.map(
+          (item, index) =>
+            (item.typeQuestion === 5 || item.typeQuestion === 2) && (
+              <RadioInputQuestion
+                key={index}
+                id={index}
+                description={item.content}
+                mandatory={item.mandatory}
+                answerValue={item.answerValue}
+                options={item.itens || undefined}
+                onChange={handleInputChange}
+              />
+            ),
         )}
 
       <button type="submit" className="h-10 w-48 bg-gray-950 text-white">

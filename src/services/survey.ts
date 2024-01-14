@@ -5,7 +5,7 @@ type QuestionOptionsType = {
   description: string
 }
 
-export type QuestionType = {
+export type QuestionData = {
   typeQuestion: number
   content: string
   mandatory: boolean
@@ -15,7 +15,7 @@ export type QuestionType = {
 }
 
 export type SurveyResponseType = {
-  itens: QuestionType[]
+  itens: QuestionData[]
   error: string
   warning: string
 }
