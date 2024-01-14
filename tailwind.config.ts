@@ -18,6 +18,22 @@ const config: Config = {
         alert: '#FFAE00',
         primary: '#FFB800',
       },
+      fontSize: {
+        sm: [
+          '0.875rem',
+          {
+            lineHeight: '1.3125rem',
+            fontWeight: '500',
+          },
+        ],
+        '2xl': [
+          '1.5rem',
+          {
+            lineHeight: '1.875rem',
+            fontWeight: '600',
+          },
+        ],
+      },
     },
   },
   plugins: [],

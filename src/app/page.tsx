@@ -1,4 +1,4 @@
-import DynamicSurveyForm from '@/components/Home/DynamicSurveyForm'
+import DynamicSurveyForm from '@/components/SurveyForm/DynamicSurveyForm'
 import Wrapper from '@/components/Wrapper'
 
 export default function Home() {
