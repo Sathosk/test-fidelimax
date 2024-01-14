@@ -2,6 +2,8 @@
 
 import { useEffect, useState } from 'react'
 
+import { SurveyResponseType, SurveyServices } from '@/services/survey'
+
 import RadioInputQuestion from './QuestionTypes/RadioInputQuestion'
 
 export type HandleInputChangeType = (value: string | number, id: number) => void
@@ -11,66 +13,34 @@ type AnswerType = {
   answerValue: string | number
 }
 
-type QuestionOptionsType = {
-  value: number
-  description: string
-}
-
-type QuestionType = {
-  typeQuestion: number
-  content: string
-  mandatory: boolean
-  answerValue?: number | string
-  horizontal?: boolean
-  itens?: QuestionOptionsType[]
-  error: string
-  warning: string
-}
-
-const mockobj: QuestionType = {
-  typeQuestion: 5,
-  content: 'Pergunta de escolha única?',
-  mandatory: true,
-  answerValue: 1,
-  itens: [
-    {
-      value: 0,
-      description: 'Sim',
-    },
-    {
-      value: 1,
-      description: 'Não',
-    },
-  ],
-  error: '',
-  warning: '',
-}
-
-const mockobj2: QuestionType = {
-  typeQuestion: 2,
-  answerValue: 9,
-  mandatory: true,
-  content:
-    'Também é importante ter um espaço para o dono da loja colocar uma descrição da pergunta para ajudar o entendimento do usuário',
-  error: '',
-  warning: '',
-}
-
-const arrayMock = [mockobj2, mockobj]
-
 export default function DynamicSurveyForm() {
+  const [surveyData, setSurveyData] = useState<SurveyResponseType>()
   const [answers, setAnswers] = useState<AnswerType[]>([])
 
-  useEffect(() => {
-    const answers = arrayMock.map((item, index) => {
-      return {
-        id: index,
-        typeQuestion: item.typeQuestion,
-        answerValue: item.answerValue || '',
-      }
-    })
+  console.log('surveyData: ', surveyData)
 
-    setAnswers(answers)
+  useEffect(() => {
+    async function fetchSurveyData() {
+      try {
+        const surveyResData = await SurveyServices.getSurveyData()
+
+        const answers = surveyResData.itens.map((item, index) => {
+          return {
+            id: index,
+            typeQuestion: item.typeQuestion,
+            answerValue: item.answerValue || '',
+          }
+        })
+
+        setAnswers(answers)
+        setSurveyData(surveyResData)
+      } catch (error) {
+        console.log('fall on exception')
+        console.error(error)
+      }
+    }
+
+    fetchSurveyData()
   }, [])
 
   const handleInputChange: HandleInputChangeType = (value, id) => {
@@ -96,17 +66,20 @@ export default function DynamicSurveyForm() {
       className="flex w-full flex-col gap-10 rounded-2xl bg-white p-8"
       onSubmit={onSubmit}
     >
-      {arrayMock.map((item, index) => (
-        <RadioInputQuestion
-          key={index}
-          id={index}
-          description={item.content}
-          mandatory={item.mandatory}
-          answerValue={item.answerValue}
-          options={item.itens || undefined}
-          onChange={handleInputChange}
-        />
-      ))}
+      {surveyData &&
+        surveyData.itens.map((item, index) =>
+          item.typeQuestion === 5 || item.typeQuestion === 2 ? (
+            <RadioInputQuestion
+              key={index}
+              id={index}
+              description={item.content}
+              mandatory={item.mandatory}
+              answerValue={item.answerValue}
+              options={item.itens || undefined}
+              onChange={handleInputChange}
+            />
+          ) : null,
+        )}
 
       <button type="submit" className="h-10 w-48 bg-gray-950 text-white">
         Enviar
