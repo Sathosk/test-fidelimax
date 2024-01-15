@@ -1,6 +1,6 @@
 import axios from '@/lib/axios'
 
-type QuestionOptionsType = {
+export type QuestionOptionsType = {
   value: number
   description: string
 }
