@@ -5,7 +5,7 @@ export default function Home() {
   return (
     <main className="relative w-full bg-gray-100">
       <div className="absolute top-0 h-[244px] w-full bg-gray-800">
-        <span className="mx-auto block w-11/12 pb-6 pl-6 pt-[18px] text-[0.75rem] font-medium leading-3 text-gray-400">
+        <span className="mx-auto block w-11/12 max-w-[1440px] pb-6 pl-6 pt-[18px] text-[0.75rem] font-medium leading-3 text-gray-400">
           Pesquisa de Satisfação
         </span>
       </div>

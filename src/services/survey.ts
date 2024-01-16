@@ -9,7 +9,7 @@ export type QuestionData = {
   typeQuestion: number
   content: string
   mandatory: boolean
-  answerValue?: number | string
+  answerValue?: number | string | number[]
   horizontal?: boolean
   itens?: QuestionOptionsType[]
 }

@@ -4,20 +4,29 @@ import { useEffect, useState } from 'react'
 
 import { SurveyResponseType, SurveyServices } from '@/services/survey'
 
+import CheckBoxInputQuestion from './QuestionTypes/CheckBoxInputQuestion'
 import RadioInputQuestion from './QuestionTypes/RadioInputQuestion'
 import SelectInputQuestion from './QuestionTypes/SelectInputQuestion'
 import TextAreaInputQuestion from './QuestionTypes/TextAreaInputQuestion'
 
-export type HandleInputChangeType = (value: string | number, id: number) => void
+export type HandleInputChangeType = (
+  value: string | number | number[],
+  id: number,
+) => void
 
 type AnswerType = {
+  id: number
   typeQuestion: number
-  answerValue: string | number
+  answerValue: string | number | number[]
+  mandatory: boolean
 }
 
 export default function DynamicSurveyForm() {
   const [surveyData, setSurveyData] = useState<SurveyResponseType>() // Survey Data from API
   const [answers, setAnswers] = useState<AnswerType[]>([]) // Answers from user and body for post request
+  const [errors, setErrors] = useState<Record<number, boolean>>({})
+
+  const boolean = true
 
   console.log('surveyData: ', surveyData)
 
@@ -46,7 +55,12 @@ export default function DynamicSurveyForm() {
     return surveyItems.map((item, index) => ({
       id: index,
       typeQuestion: item.typeQuestion,
-      answerValue: item.answerValue || '',
+      answerValue: item.answerValue
+        ? item.answerValue
+        : item.typeQuestion === 6
+          ? []
+          : '',
+      mandatory: item.mandatory,
     }))
   }
 
@@ -64,9 +78,37 @@ export default function DynamicSurveyForm() {
     })
   }
 
-  // handle form submit
+  // Remove error from checkbox question if user selects at least one option
+  const handleSetCheckboxRequired = (id: number) => {
+    if (errors[id]) {
+      setErrors((prevErrors) => ({
+        ...prevErrors,
+        [id]: false,
+      }))
+    }
+  }
+
+  // Handle form submit
   function onSubmit(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault()
+
+    // Find checkbox questions and check if they are mandatory and if they have at least one option selected
+    const checkboxAnswers = answers.filter(
+      (answers) => answers.typeQuestion === 6,
+    )
+
+    checkboxAnswers.forEach((checkboxAnswer) => {
+      const answerValue = checkboxAnswer.answerValue as number[]
+
+      console.log('is mandatory: ', checkboxAnswer.mandatory)
+
+      if (answerValue.length === 0 && boolean) {
+        setErrors((prevErrors) => ({
+          ...prevErrors,
+          [checkboxAnswer.id]: true,
+        }))
+      }
+    })
 
     console.log('answers: ', answers)
   }
@@ -101,7 +143,7 @@ export default function DynamicSurveyForm() {
                   handleChange={handleInputChange}
                   question={item.content}
                   answerValue={item.answerValue}
-                  mandatory={index === 7}
+                  mandatory={item.mandatory}
                 />
               )
             case 4:
@@ -110,11 +152,32 @@ export default function DynamicSurveyForm() {
                   key={index}
                   id={index}
                   question={item.content}
-                  answerValue={item.answerValue}
+                  answerValue={item.answerValue as number}
                   mandatory={item.mandatory}
                   options={item.itens || undefined}
                   handleChange={handleInputChange}
                 />
+              )
+
+            case 6:
+              return (
+                <div className="flex flex-col gap-2">
+                  <CheckBoxInputQuestion
+                    key={index}
+                    id={index}
+                    description={item.content}
+                    mandatory={item.mandatory}
+                    answerValue={item.answerValue as number[] | undefined}
+                    options={item.itens || undefined}
+                    handleChange={handleInputChange}
+                    toggleSetCheckboxRequired={handleSetCheckboxRequired}
+                  />
+                  {errors[index] && (
+                    <p className="text-sm text-red-500">
+                      Por favor, selecione pelo menos uma opção
+                    </p>
+                  )}
+                </div>
               )
             default:
               return null

@@ -5,7 +5,7 @@ import { HandleInputChangeType } from '../DynamicSurveyForm'
 interface TextAreaInputQuestionProps {
   id: number
   question: string
-  answerValue?: number | string
+  answerValue?: number | string | number[]
   mandatory?: boolean
   handleChange: HandleInputChangeType
 }
@@ -33,7 +33,7 @@ export default function TextAreaInputQuestion({
         id="textArea1"
         name="textArea1"
         placeholder={mandatory ? 'Digite a resposta' : 'Digite aqui...'}
-        defaultValue={answerValue}
+        defaultValue={answerValue as string}
         maxLength={mandatory ? 500 : 250}
         required={mandatory}
         className={twMerge(

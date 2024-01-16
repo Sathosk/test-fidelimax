@@ -7,7 +7,7 @@ import { HandleInputChangeType } from '../DynamicSurveyForm'
 interface RadioInputQuestionProps {
   id: number
   description: string
-  answerValue?: number | string
+  answerValue?: number | string | number[]
   mandatory?: boolean
   options?: QuestionOptionsType[]
   handleChange: HandleInputChangeType
@@ -71,7 +71,7 @@ export default function RadioInputQuestion({
                   required={mandatory}
                   value={index}
                 />
-                <label htmlFor={`radioOption${index + 1}`}>{index + 1}</label>
+                <label htmlFor={`radioFixed${index + 1}`}>{index + 1}</label>
               </div>
             ))}
           </div>

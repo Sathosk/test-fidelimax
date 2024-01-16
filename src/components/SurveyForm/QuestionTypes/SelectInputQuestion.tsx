@@ -9,7 +9,7 @@ import { HandleInputChangeType } from '../DynamicSurveyForm'
 interface SelectInputQuestionProps {
   id: number
   question: string
-  answerValue?: number | string
+  answerValue?: number | undefined
   mandatory?: boolean
   options: QuestionOptionsType[] | undefined
   handleChange: HandleInputChangeType
