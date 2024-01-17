@@ -1,4 +1,3 @@
-import { type } from 'os'
 import { twMerge } from 'tailwind-merge'
 
 interface SubmitButtonProps {

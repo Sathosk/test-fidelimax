@@ -1,5 +1,5 @@
 import Image from 'next/image'
-import { use, useEffect, useState } from 'react'
+import { useState } from 'react'
 
 import goldenStarIcon from '@/assets/golden-star.svg'
 import grayStarIcon from '@/assets/gray-star.svg'
