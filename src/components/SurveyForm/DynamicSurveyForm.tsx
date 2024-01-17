@@ -8,6 +8,7 @@ import {
   SurveyServices,
 } from '@/services/survey'
 
+import SubmitButton from '../SubmitButton'
 import CheckBoxInputQuestion from './QuestionTypes/CheckBoxInputQuestion'
 import RadioInputQuestion from './QuestionTypes/RadioInputQuestion'
 import SelectInputQuestion from './QuestionTypes/SelectInputQuestion'
@@ -162,9 +163,19 @@ export default function DynamicSurveyForm() {
     const isStarRatingValid = validateStarRatingQuestions()
 
     if (isCheckboxValid && isStarRatingValid) {
-      console.log('answers: ', answers)
+      const newBody = { ...(surveyData as SurveyResponseType) }
+
+      answers.forEach((answer) => {
+        newBody.itens[answer.id].answerValue = answer.answerValue
+      })
+
+      console.log('answers: ', newBody)
+
+      // console.log('answers: ', surveyData)
     }
   }
+
+  if (!surveyData) return null
 
   return (
     <form
@@ -259,9 +270,7 @@ export default function DynamicSurveyForm() {
           }
         })}
 
-      <button type="submit" className="h-10 w-48 bg-gray-950 text-white">
-        Enviar
-      </button>
+      <SubmitButton text="Enviar" align="start" type="submit" />
     </form>
   )
 }

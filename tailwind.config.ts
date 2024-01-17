@@ -35,6 +35,16 @@ const config: Config = {
           },
         ],
       },
+      dropShadow: {
+        yellow: [
+          '0px 0px 0px rgba(255, 213, 104, 0.24)',
+          '0px 1px 3px rgba(255, 213, 104, 0.24)',
+          '0px 5px 5px rgba(255, 213, 104, 0.20)',
+          '0px 1px 7px rgba(255, 213, 104, 0.12)',
+          '0px 20px 8px rgba(255, 213, 104, 0.04)',
+          '0px 31px 9px rgba(255, 213, 104, 0.00)',
+        ],
+      },
     },
   },
   plugins: [],
