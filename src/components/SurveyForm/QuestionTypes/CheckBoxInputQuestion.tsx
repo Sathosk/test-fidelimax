@@ -13,7 +13,7 @@ interface CheckBoxInputQuestionProps {
   mandatory?: boolean
   options?: QuestionOptionsType[]
   handleChange: HandleInputChangeType
-  toggleSetCheckboxRequired: (id: number) => void
+  toggleErrorMessage: (id: number) => void
 }
 
 export default function CheckBoxInputQuestion({
@@ -24,11 +24,9 @@ export default function CheckBoxInputQuestion({
   mandatory,
   options,
   handleChange,
-  toggleSetCheckboxRequired,
+  toggleErrorMessage,
 }: CheckBoxInputQuestionProps) {
   const [checkedOptions, setCheckedOptions] = useState<number[]>([])
-
-  console.log(checkedOptions)
 
   function handleCheckboxChange(value: number, id: number) {
     let newCheckedOptions = [...checkedOptions]
@@ -43,7 +41,7 @@ export default function CheckBoxInputQuestion({
     handleChange(newCheckedOptions, id)
 
     if (mandatory) {
-      toggleSetCheckboxRequired(id)
+      toggleErrorMessage(id)
     }
   }
 

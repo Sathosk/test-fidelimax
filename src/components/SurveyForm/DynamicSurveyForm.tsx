@@ -2,11 +2,16 @@
 
 import { useEffect, useState } from 'react'
 
-import { SurveyResponseType, SurveyServices } from '@/services/survey'
+import {
+  QuestionData,
+  SurveyResponseType,
+  SurveyServices,
+} from '@/services/survey'
 
 import CheckBoxInputQuestion from './QuestionTypes/CheckBoxInputQuestion'
 import RadioInputQuestion from './QuestionTypes/RadioInputQuestion'
 import SelectInputQuestion from './QuestionTypes/SelectInputQuestion'
+import StarQuestion from './QuestionTypes/StarRatingQuestion'
 import TextAreaInputQuestion from './QuestionTypes/TextAreaInputQuestion'
 
 export type HandleInputChangeType = (
@@ -25,10 +30,6 @@ export default function DynamicSurveyForm() {
   const [surveyData, setSurveyData] = useState<SurveyResponseType>() // Survey Data from API
   const [answers, setAnswers] = useState<AnswerType[]>([]) // Answers from user and body for post request
   const [errors, setErrors] = useState<Record<number, boolean>>({})
-
-  const boolean = true
-
-  console.log('surveyData: ', surveyData)
 
   // fetch survey data from API and set it to surveyData and answers state
   useEffect(() => {
@@ -52,16 +53,30 @@ export default function DynamicSurveyForm() {
   function transformSurveyDataToAnswers(
     surveyItems: SurveyResponseType['itens'],
   ) {
-    return surveyItems.map((item, index) => ({
-      id: index,
-      typeQuestion: item.typeQuestion,
-      answerValue: item.answerValue
-        ? item.answerValue
-        : item.typeQuestion === 6
-          ? []
-          : '',
-      mandatory: item.mandatory,
-    }))
+    return surveyItems.map((item, index) => {
+      let answerValue: QuestionData['answerValue']
+
+      switch (true) {
+        case item.answerValue !== undefined:
+          answerValue = item.answerValue
+          break
+        case item.typeQuestion === 1:
+          answerValue = 0
+          break
+        case item.typeQuestion === 6:
+          answerValue = []
+          break
+        default:
+          answerValue = ''
+      }
+
+      return {
+        id: index,
+        typeQuestion: item.typeQuestion,
+        answerValue,
+        mandatory: item.mandatory,
+      }
+    })
   }
 
   // handle input change from user and set it to answers state
@@ -78,8 +93,8 @@ export default function DynamicSurveyForm() {
     })
   }
 
-  // Remove error from checkbox question if user selects at least one option
-  const handleSetCheckboxRequired = (id: number) => {
+  // Remove error from checkbox question or star rating question if user selects at least one option
+  const removeMessageOnSelect = (id: number) => {
     if (errors[id]) {
       setErrors((prevErrors) => ({
         ...prevErrors,
@@ -88,29 +103,67 @@ export default function DynamicSurveyForm() {
     }
   }
 
-  // Handle form submit
-  function onSubmit(event: React.FormEvent<HTMLFormElement>) {
-    event.preventDefault()
+  // Validate if checkbox questions have at least one option selected
+  function validateCheckboxQuestions() {
+    let isValid = true
 
-    // Find checkbox questions and check if they are mandatory and if they have at least one option selected
     const checkboxAnswers = answers.filter(
       (answers) => answers.typeQuestion === 6,
     )
 
     checkboxAnswers.forEach((checkboxAnswer) => {
       const answerValue = checkboxAnswer.answerValue as number[]
+      const isNotSelected = answerValue.length === 0
 
-      console.log('is mandatory: ', checkboxAnswer.mandatory)
-
-      if (answerValue.length === 0 && boolean) {
+      if (isNotSelected && checkboxAnswer.mandatory) {
         setErrors((prevErrors) => ({
           ...prevErrors,
           [checkboxAnswer.id]: true,
         }))
+
+        isValid = false
       }
     })
 
-    console.log('answers: ', answers)
+    return isValid
+  }
+
+  // Validate if star rating questions is selected
+  function validateStarRatingQuestions() {
+    let isValid = true
+
+    const starRatingAnswers = answers.filter(
+      (answers) => answers.typeQuestion === 1,
+    )
+
+    starRatingAnswers.forEach((starRatingAnswer) => {
+      const answerValue = starRatingAnswer.answerValue
+      const isNotSelected = answerValue === 0 || !answerValue
+
+      if (isNotSelected && starRatingAnswer.mandatory) {
+        setErrors((prevErrors) => ({
+          ...prevErrors,
+          [starRatingAnswer.id]: true,
+        }))
+
+        isValid = false
+      }
+    })
+
+    return isValid
+  }
+
+  // Handle form submit
+  function onSubmit(event: React.FormEvent<HTMLFormElement>) {
+    event.preventDefault()
+
+    // Find checkbox questions and check if they are mandatory and if they have at least one option selected
+    const isCheckboxValid = validateCheckboxQuestions()
+    const isStarRatingValid = validateStarRatingQuestions()
+
+    if (isCheckboxValid && isStarRatingValid) {
+      console.log('answers: ', answers)
+    }
   }
 
   return (
@@ -122,6 +175,25 @@ export default function DynamicSurveyForm() {
         Array.isArray(surveyData.itens) &&
         surveyData.itens.map((item, index) => {
           switch (item.typeQuestion) {
+            case 1:
+              return (
+                <div key={`starQuestion-${index}`}>
+                  <StarQuestion
+                    id={index}
+                    question={item.content}
+                    answerValue={item.answerValue}
+                    mandatory={item.mandatory}
+                    handleChange={handleInputChange}
+                    toggleErrorMessage={removeMessageOnSelect}
+                  />
+                  {errors[index] && (
+                    <p className="text-sm text-red-500">
+                      Por favor, selecione uma pontuação
+                    </p>
+                  )}
+                </div>
+              )
+
             case 2:
             case 5:
               return (
@@ -173,7 +245,7 @@ export default function DynamicSurveyForm() {
                     answerValue={item.answerValue as number[] | undefined}
                     options={item.itens || undefined}
                     handleChange={handleInputChange}
-                    toggleSetCheckboxRequired={handleSetCheckboxRequired}
+                    toggleErrorMessage={removeMessageOnSelect}
                   />
                   {errors[index] && (
                     <p className="text-sm text-red-500">
