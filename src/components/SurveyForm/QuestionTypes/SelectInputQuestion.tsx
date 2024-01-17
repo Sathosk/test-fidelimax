@@ -49,7 +49,7 @@ export default function SelectInputQuestion({
           {question}
         </option>
         {options?.map(({ value, description }) => (
-          <option key={value} value={value}>
+          <option key={`selectOption${value}`} value={value}>
             {description}
           </option>
         ))}

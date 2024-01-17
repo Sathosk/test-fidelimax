@@ -29,7 +29,7 @@ export default function RadioInputQuestion({
           <div className="mt-3 flex items-center gap-4 ">
             {options.map(({ value, description }, index) => (
               <div
-                key={value}
+                key={`radioDynamicOptions${value}`}
                 className={twMerge(
                   'flex items-center gap-3',
                   index === 0 && 'pl-1',
@@ -58,7 +58,10 @@ export default function RadioInputQuestion({
           <p className="mt-2 text-sm">{description}</p>
           <div className="mt-10 flex w-full flex-wrap items-center justify-between gap-1">
             {Array.from({ length: 10 }).map((_, index) => (
-              <div key={index + 1} className="flex flex-col items-center gap-3">
+              <div
+                key={`radioFixedOptions${index + 1}`}
+                className="flex flex-col items-center gap-3"
+              >
                 <input
                   id={`radioFixed${index + 1}`}
                   type="radio"

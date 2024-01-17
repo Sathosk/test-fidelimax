@@ -126,7 +126,7 @@ export default function DynamicSurveyForm() {
             case 5:
               return (
                 <RadioInputQuestion
-                  key={index}
+                  key={`radioQuestion-${index}`}
                   id={index}
                   description={item.content}
                   mandatory={item.mandatory}
@@ -138,7 +138,7 @@ export default function DynamicSurveyForm() {
             case 3:
               return (
                 <TextAreaInputQuestion
-                  key={index}
+                  key={`textAreaQuestion-${index}`}
                   id={index}
                   handleChange={handleInputChange}
                   question={item.content}
@@ -149,7 +149,7 @@ export default function DynamicSurveyForm() {
             case 4:
               return (
                 <SelectInputQuestion
-                  key={index}
+                  key={`selectQuestion-${index}`}
                   id={index}
                   question={item.content}
                   answerValue={item.answerValue as number}
@@ -161,12 +161,15 @@ export default function DynamicSurveyForm() {
 
             case 6:
               return (
-                <div className="flex flex-col gap-2">
+                <div
+                  className="flex flex-col gap-2"
+                  key={`checkBoxQuestion-${index}`}
+                >
                   <CheckBoxInputQuestion
-                    key={index}
                     id={index}
                     description={item.content}
                     mandatory={item.mandatory}
+                    horizontal={item.horizontal}
                     answerValue={item.answerValue as number[] | undefined}
                     options={item.itens || undefined}
                     handleChange={handleInputChange}
