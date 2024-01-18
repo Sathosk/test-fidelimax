@@ -4,12 +4,14 @@ import { useState } from 'react'
 import goldenStarIcon from '@/assets/golden-star.svg'
 import grayStarIcon from '@/assets/gray-star.svg'
 
+import { AnswerValueType } from '../DynamicSurveyForm'
+
 interface StarRatingQuestionProps {
   id: number
   question: string
   answerValue?: number | string | number[]
   mandatory?: boolean
-  handleChange: (value: string | number | number[], id: number) => void
+  handleChange: (value: AnswerValueType, id: number) => void
   toggleErrorMessage: (id: number) => void
 }
 
