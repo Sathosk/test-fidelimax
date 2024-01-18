@@ -12,7 +12,6 @@ import {
   SurveyServices,
 } from '@/services/survey'
 
-import LoadingComponent from '../LoadingComponent'
 import { Modal } from '../Modal'
 import Spinner from '../Spinner'
 import SubmitButton from '../SubmitButton'
