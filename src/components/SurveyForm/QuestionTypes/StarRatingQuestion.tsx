@@ -38,12 +38,12 @@ export default function StarRatingQuestion({
       </p>
       <p className="mt-2 text-sm">{question}</p>
       <div className="mt-4 flex">
-        {[...Array(5)].map((star, index) => {
+        {[...Array(5)].map((_, index) => {
           index += 1
           return (
             <button
               type="button"
-              key={index}
+              key={`star${index}`}
               onClick={() => handleClick(index)}
               className="flex h-16 w-20 items-center justify-center"
               onMouseEnter={() => setHover(index)}
