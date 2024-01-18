@@ -24,16 +24,14 @@ export default function SubmitButton({
       type={type}
       className={twMerge(
         'relative h-[56px] rounded-[500px] px-16 text-[1.125rem] font-bold leading-[18px] text-gray-800',
-        [align === 'start' && 'self-start'],
-        [align === 'center' && 'self-center'],
-        [align === 'end' && 'self-end'],
-        [color === 'yellow' && 'bg-primary drop-shadow-yellow'],
-        [color === 'green' && 'bg-success drop-shadow-green px-6'],
-        [color === 'red' && 'bg-danger drop-shadow-red px-6'],
-        [
-          color === 'dark-gray' &&
-            'drop-shadow-dark-gray bg-gray-800 px-6 text-white',
-        ],
+        align === 'start' && 'self-start',
+        align === 'center' && 'self-center',
+        align === 'end' && 'self-end',
+        color === 'yellow' && 'bg-primary drop-shadow-yellow',
+        color === 'green' && 'bg-success px-6 drop-shadow-green',
+        color === 'red' && 'bg-danger px-6 drop-shadow-red',
+        color === 'dark-gray' &&
+          'bg-gray-800 px-6 text-white drop-shadow-dark-gray',
       )}
       disabled={isLoading}
       onClick={onClick}
